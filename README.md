@@ -1,4 +1,4 @@
-_# 🧠💊 **MedGuardAI**  
+# 🧠💊 **MedGuardAI**  
 ### *AI Health Bot + Medical NFTs on Aptos*  
 > *AI diagnoses symptoms and mints a private medical summary NFT stored securely on the Aptos blockchain.*
 
