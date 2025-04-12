@@ -5,12 +5,23 @@ export async function GET(req: NextRequest) {
   try {
     const supabase = createServerSupabaseClient()
 
-    // Get user_id from query params
-    const { searchParams } = new URL(req.url)
-    const userId = searchParams.get("userId")
+    // Get the current authenticated user
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
 
-    if (!userId) {
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 })
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    // Get user_id from query params or use authenticated user's ID
+    const { searchParams } = new URL(req.url)
+    const userId = searchParams.get("userId") || session.user.id
+
+    // Verify the user has permission to access this data
+    if (userId !== session.user.id) {
+      // In a real app, you might check if the user has admin permissions
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
     // Get latest IoT data for user
@@ -37,15 +48,34 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const supabase = createServerSupabaseClient()
+
+    // Get the current authenticated user
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const body = await req.json()
 
     const { userId, heartRate, steps, temperature, sleepHours, bloodOxygen } = body
+
+    // Use authenticated user's ID if userId is not provided
+    const targetUserId = userId || session.user.id
+
+    // Verify the user has permission to add data for this user
+    if (targetUserId !== session.user.id) {
+      // In a real app, you might check if the user has admin permissions
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+    }
 
     // Insert IoT data
     const { data, error } = await supabase
       .from("iot_data")
       .insert({
-        user_id: userId,
+        user_id: targetUserId,
         heart_rate: heartRate,
         steps,
         temperature,

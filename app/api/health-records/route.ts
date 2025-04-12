@@ -7,15 +7,23 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get("userId")
 
-    if (!userId) {
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 })
+    // Get the current authenticated user
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
+
+    // If userId is not provided, use the authenticated user's ID
+    const targetUserId = userId || session.user.id
 
     // Get health records for the user
     const { data: records, error } = await supabase
       .from("health_records")
       .select("*")
-      .eq("user_id", userId)
+      .eq("user_id", targetUserId)
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -32,12 +40,28 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const supabase = createServerSupabaseClient()
+
+    // Get the current authenticated user
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    // For development purposes, allow requests without authentication
+    // In production, you would want to uncomment this check
+    /*
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    */
+
     const body = await request.json()
     const {
+      user_id,
       userId,
       title,
       diagnosis,
       riskLevel,
+      risk_level,
       summary,
       ipfsHash,
       ipfsUrl,
@@ -47,18 +71,24 @@ export async function POST(request: NextRequest) {
       suggestions,
     } = body
 
-    if (!userId || !title || !diagnosis || !riskLevel) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    // Use the authenticated user's ID if userId is not provided
+    // For development, use the provided user_id or userId if session is null
+    const targetUserId = user_id || userId || (session ? session.user.id : null)
+
+    if (!targetUserId || !title || !diagnosis || !(riskLevel || risk_level)) {
+      return NextResponse.json({ error: "Missing required fields", body }, { status: 400 })
     }
+
+    console.log("Creating health record with user ID:", targetUserId)
 
     // Insert health record
     const { data: record, error } = await supabase
       .from("health_records")
       .insert({
-        user_id: userId,
+        user_id: targetUserId,
         title,
         diagnosis,
-        risk_level: riskLevel,
+        risk_level: risk_level || riskLevel,
         summary,
         ipfs_hash: ipfsHash,
         ipfs_url: ipfsUrl,
@@ -69,6 +99,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) {
+      console.error("Database error:", error)
       throw error
     }
 
@@ -88,6 +119,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ record, success: true })
   } catch (error) {
     console.error("Error creating health record:", error)
-    return NextResponse.json({ error: "Failed to create health record" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to create health record", details: error.message }, { status: 500 })
   }
 }

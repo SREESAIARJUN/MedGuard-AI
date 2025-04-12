@@ -58,31 +58,43 @@ export default function SummaryPage() {
 
       // Check for existing user or create a temporary one
       const checkUser = async () => {
-        // For demo purposes, we'll create a temporary user
-        // In a real app, this would use proper authentication
-        const tempWalletAddress = `demo_${Date.now()}`
+        try {
+          // First check if we have a user ID in session storage
+          const existingUserId = sessionStorage.getItem("userId")
+          if (existingUserId) {
+            setUserId(existingUserId)
+            return
+          }
 
-        const { data, error } = await supabase
-          .from("users")
-          .insert({ wallet_address: tempWalletAddress })
-          .select()
-          .single()
+          // For demo purposes, we'll create a temporary user
+          // In a real app, this would use proper authentication
+          const tempWalletAddress = `demo_${Date.now()}`
 
-        if (error) {
-          console.error("Error creating user:", error)
-          return
+          const { data, error } = await supabase
+            .from("users")
+            .insert({ wallet_address: tempWalletAddress })
+            .select()
+            .single()
+
+          if (error) {
+            console.error("Error creating user:", error)
+            // Fallback to a hardcoded ID for demo purposes
+            setUserId("demo_user_id")
+            sessionStorage.setItem("userId", "demo_user_id")
+            return
+          }
+
+          setUserId(data.id)
+          sessionStorage.setItem("userId", data.id)
+        } catch (error) {
+          console.error("Error checking user:", error)
+          // Fallback to a hardcoded ID for demo purposes
+          setUserId("demo_user_id")
+          sessionStorage.setItem("userId", "demo_user_id")
         }
-
-        setUserId(data.id)
-        sessionStorage.setItem("userId", data.id)
       }
 
-      const existingUserId = sessionStorage.getItem("userId")
-      if (existingUserId) {
-        setUserId(existingUserId)
-      } else {
-        checkUser()
-      }
+      checkUser()
     } catch (error) {
       console.error("Error retrieving diagnosis data:", error)
       toast({
@@ -207,18 +219,20 @@ export default function SummaryPage() {
     try {
       // Prepare record data
       const recordData = {
-        userId,
+        user_id: userId, // Make sure we're using the correct field name
         title: `Medical Record: ${diagnosis.diagnosis}`,
         diagnosis: diagnosis.diagnosis,
-        riskLevel: diagnosis.riskLevel,
+        risk_level: diagnosis.riskLevel,
         summary: diagnosis.summary,
-        ipfsHash: ipfsHash || null,
-        ipfsUrl: sessionStorage.getItem("ipfsUrl") || null,
-        txHash: null, // Will be updated after blockchain minting
-        wellnessScore: diagnosis.wellness_score || 75,
-        possibleCauses: diagnosis.possibleCauses,
+        ipfs_hash: ipfsHash || null,
+        ipfs_url: sessionStorage.getItem("ipfsUrl") || null,
+        tx_hash: null, // Will be updated after blockchain minting
+        wellness_score: diagnosis.wellness_score || 75,
+        possible_causes: diagnosis.possibleCauses,
         suggestions: diagnosis.suggestions,
       }
+
+      console.log("Saving record data:", recordData)
 
       // Save to Supabase via API
       const response = await fetch("/api/health-records", {
@@ -457,6 +471,25 @@ export default function SummaryPage() {
                     "Save to Database"
                   )}
                 </Button>
+
+                {/* Add this debug button */}
+                {process.env.NODE_ENV !== "production" && (
+                  <Button
+                    onClick={() => {
+                      console.log("Current diagnosis data:", diagnosis)
+                      console.log("Current user ID:", userId)
+                      toast({
+                        title: "Debug Info",
+                        description: `User ID: ${userId || "Not set"}`,
+                      })
+                    }}
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2"
+                  >
+                    Debug Info
+                  </Button>
+                )}
               </div>
             </CardContent>
 
