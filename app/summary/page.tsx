@@ -228,7 +228,7 @@ export default function SummaryPage() {
         ipfs_url: sessionStorage.getItem("ipfsUrl") || null,
         tx_hash: null, // Will be updated after blockchain minting
         wellness_score: diagnosis.wellness_score || 75,
-        possible_causes: diagnosis.possibleCauses,
+        possibleCauses: diagnosis.possibleCauses,
         suggestions: diagnosis.suggestions,
       }
 
@@ -243,15 +243,35 @@ export default function SummaryPage() {
         body: JSON.stringify(recordData),
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to save record")
-      }
-
       const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save record")
+      }
 
       // Store record ID in session storage
       sessionStorage.setItem("currentRecordId", data.record.id)
+
+      // Also store in medicalRecords for the records page
+      try {
+        const existingRecords = JSON.parse(sessionStorage.getItem("medicalRecords") || "[]")
+        const newRecord = {
+          id: data.record.id,
+          title: recordData.title,
+          diagnosis: recordData.diagnosis,
+          risk_level: recordData.risk_level,
+          summary: recordData.summary,
+          ipfs_hash: recordData.ipfs_hash,
+          ipfs_url: recordData.ipfs_url,
+          tx_hash: recordData.tx_hash,
+          wellness_score: recordData.wellness_score,
+          created_at: new Date().toISOString(),
+        }
+
+        sessionStorage.setItem("medicalRecords", JSON.stringify([...existingRecords, newRecord]))
+      } catch (storageError) {
+        console.error("Error updating session storage:", storageError)
+      }
 
       toast({
         title: "Record saved",
@@ -261,7 +281,7 @@ export default function SummaryPage() {
       console.error("Database save error:", error)
       toast({
         title: "Save failed",
-        description: "There was an error saving to the database. Please try again.",
+        description: `There was an error saving to the database: ${error.message}`,
         variant: "destructive",
       })
     } finally {
