@@ -1,4 +1,4 @@
-# 🧠💊 **MedGuardAI**  
+_# 🧠💊 **MedGuardAI**  
 ### *AI Health Bot + Medical NFTs on Aptos*  
 > *AI diagnoses symptoms and mints a private medical summary NFT stored securely on the Aptos blockchain.*
 
@@ -57,55 +57,74 @@ Patients today face:
 
 ---
 
-### 🚀 **Project Features & Workflow**
+### 🚀 **Core Features & Workflow**
 
 #### ✅ 1. **AI Health Assistant**
-- Accepts inputs via text, image, audio, or video.
-- Uses **Gemini API** to analyze symptoms.
-- Outputs structured data: diagnosis, severity, causes, treatments.
-- Generates a downloadable **PDF report**.
+- Accepts inputs via **text**, **image**, **audio**, or **video**.
+- Analyzes symptoms via **Fine-tuned Gemini 2.5 Latest AI Models**.
+- Generates structured reports including:
+  - Probable diagnosis
+  - Severity level
+  - Likely causes
+  - Suggested treatments
+- Exports a **PDF health report** for permanent recordkeeping.
 
 ---
 
 #### 🔐 2. **Decentralized Secure Storage**
-- Reports are stored as PDFs.
-- PDFs are uploaded to **IPFS** via **Pinata**.
-- Unique **IPFS hash** is stored in the database and linked to the NFT.
+- AI reports are saved as PDFs.
+- Uploaded to **IPFS** via **Pinata**.
+- Unique **IPFS hash** is stored in the database and mapped to the NFT.
 
 ---
 
-#### 🧬 3. **Blockchain NFT Minting (Aptos)**
-- Mints encrypted, private NFTs for each report.
-- Provides **verifiable ownership** and **tamper-proof history**.
-- NFTs are accessible only by the user or via explicit permission.
+#### 🎟️ 3. **Private NFT Minting on Aptos**
+- Medical reports are minted as **private NFTs** on Aptos.
+- NFTs contain encrypted links to IPFS reports.
+- Ensures **data integrity**, **transparency**, and **access control**.
 
 ---
 
-#### 📱 4. **IoT Device Integration**
-- Supports smartwatches, fitness bands, and other IoT health devices.
-- Aggregates vitals like **heart rate**, **temperature**, and **activity**.
-- Computes and displays a **real-time wellness score**.
+#### 📲 4. **IoT Device Integration**
+- Connects with wearables like fitness bands or smartwatches.
+- Tracks vitals and aggregates real-time health metrics.
+- Computes personalized **Wellness Scores** from continuous inputs.
 
 ---
 
-#### 📊 5. **User Dashboard**
-- Displays health timeline, NFT ownership, and vitals.
-- Enables downloading and sharing of health reports.
-- Offers full control over data access and sharing.
+#### 👤 5. **User Authentication & Profiling**  
+> 🔐 Built with **Supabase Auth** and **Role-based Access Control**
+
+- **Secure Sign-up/Login** using email/password or OAuth.
+- Every user has a **dedicated profile** with:
+  - Personal info (age, blood group, conditions)
+  - Linked IoT devices
+  - NFT medical history
+- Profiles are stored securely in **PostgreSQL** and **encrypted at rest**.
+- Only verified users can:
+  - Mint/view NFTs
+  - Access or share medical reports
+  - Modify profile data or device settings
 
 ---
 
-#### 🏗️ 6. **Technical Architecture**
-- Server Components handle AI processing & NFT minting.
-- Client Components power real-time interactivity.
-- Supabase manages:
-  - Authentication
-  - User session handling
-  - Data encryption and access control
+#### 📊 6. **User Dashboard**
+- Shows wellness history, AI insights, and NFT collections.
+- Visual trends from AI reports and IoT vitals.
+- Share/download reports with consent-based access.
+- Grant third-party (doctor/hospital) permission to view specific NFTs.
 
 ---
 
-### 🎯 **Vision**
-> *MedGuardAI reimagines digital healthcare: Secure, Intelligent, Decentralized, and Patient-Centric.*
+#### 🏗️ 7. **Technical Architecture**
+- **Server Components** handle AI calls, IPFS uploads, and NFT minting.
+- **Client Components** power real-time dashboard UI.
+- **Supabase** manages:
+  - Auth, sessions & JWTs
+  - Data encryption & user-specific storage
+  - Fine-grained access control
 
 ---
+
+### 🌟 **Vision**
+> *Redefining healthcare with AI-powered diagnostics and decentralized medical ownership—**because your health data should belong to you**.*_
