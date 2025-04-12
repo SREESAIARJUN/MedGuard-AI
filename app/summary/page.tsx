@@ -287,9 +287,6 @@ export default function SummaryPage() {
       })
     } catch (error) {
       console.error("Database save error:", error)
-      toast({\
-        title: "Save failed\",  {
-      console.error("Database save error:", error)
       toast({
         title: "Save failed",
         description: `There was an error saving to the database: ${error.message}`,
