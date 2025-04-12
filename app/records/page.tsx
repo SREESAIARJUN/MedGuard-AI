@@ -28,6 +28,7 @@ export default function RecordsPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
   const router = useRouter()
   const { toast } = useToast()
   const { user } = useAuth()
@@ -40,8 +41,13 @@ export default function RecordsPage() {
       setErrorMessage(null)
 
       try {
-        // First try to get the user ID from session storage
-        const userId = sessionStorage.getItem("userId")
+        // First try to get the user ID from session storage - safely
+        let userId = null
+        if (typeof window !== "undefined") {
+          userId = window.sessionStorage.getItem("userId")
+        }
+
+        setUserId(userId)
 
         if (!userId) {
           console.log("No user ID found in session storage")
@@ -69,11 +75,13 @@ export default function RecordsPage() {
 
         // If no records found, check if there are any in session storage
         if (!data || data.length === 0) {
-          const storedRecords = sessionStorage.getItem("medicalRecords")
-          if (storedRecords) {
-            const parsedRecords = JSON.parse(storedRecords)
-            console.log("Using records from session storage:", parsedRecords)
-            setRecords(parsedRecords)
+          if (typeof window !== "undefined") {
+            const storedRecords = window.sessionStorage.getItem("medicalRecords")
+            if (storedRecords) {
+              const parsedRecords = JSON.parse(storedRecords)
+              console.log("Using records from session storage:", parsedRecords)
+              setRecords(parsedRecords)
+            }
           }
         }
       } catch (error) {
@@ -88,11 +96,13 @@ export default function RecordsPage() {
 
         // Try to get records from session storage as fallback
         try {
-          const storedRecords = sessionStorage.getItem("medicalRecords")
-          if (storedRecords) {
-            const parsedRecords = JSON.parse(storedRecords)
-            console.log("Using records from session storage as fallback:", parsedRecords)
-            setRecords(parsedRecords)
+          if (typeof window !== "undefined") {
+            const storedRecords = window.sessionStorage.getItem("medicalRecords")
+            if (storedRecords) {
+              const parsedRecords = JSON.parse(storedRecords)
+              console.log("Using records from session storage as fallback:", parsedRecords)
+              setRecords(parsedRecords)
+            }
           }
         } catch (storageError) {
           console.error("Error getting records from session storage:", storageError)
@@ -133,11 +143,13 @@ export default function RecordsPage() {
 
       // Also remove from session storage if it exists there
       try {
-        const storedRecords = sessionStorage.getItem("medicalRecords")
-        if (storedRecords) {
-          const parsedRecords = JSON.parse(storedRecords)
-          const updatedRecords = parsedRecords.filter((record: any) => record.id !== id)
-          sessionStorage.setItem("medicalRecords", JSON.stringify(updatedRecords))
+        if (typeof window !== "undefined") {
+          const storedRecords = window.sessionStorage.getItem("medicalRecords")
+          if (storedRecords) {
+            const parsedRecords = JSON.parse(storedRecords)
+            const updatedRecords = parsedRecords.filter((record: any) => record.id !== id)
+            window.sessionStorage.setItem("medicalRecords", JSON.stringify(updatedRecords))
+          }
         }
       } catch (storageError) {
         console.error("Error updating session storage:", storageError)
@@ -219,6 +231,14 @@ export default function RecordsPage() {
     }
   }
 
+  // Get user ID safely for display
+  const getUserIdDisplay = () => {
+    if (typeof window !== "undefined") {
+      return window.sessionStorage.getItem("userId") || "Not set"
+    }
+    return userId || "Not set"
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950/30 dark:via-purple-950/30 dark:to-pink-950/30">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -251,7 +271,7 @@ export default function RecordsPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-2">
             <Badge className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/20">
-              User ID: {sessionStorage.getItem("userId") || "Not set"}
+              User ID: {getUserIdDisplay()}
             </Badge>
           </div>
 

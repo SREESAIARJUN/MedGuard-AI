@@ -42,8 +42,11 @@ export default function SummaryPage() {
 
   // Retrieve diagnosis data from session storage
   useEffect(() => {
+    // Only run this effect on the client side
+    if (typeof window === "undefined") return
+
     try {
-      const data = sessionStorage.getItem("diagnosisData")
+      const data = window.sessionStorage.getItem("diagnosisData")
       if (data) {
         setDiagnosis(JSON.parse(data))
       } else {
@@ -60,7 +63,7 @@ export default function SummaryPage() {
       const checkUser = async () => {
         try {
           // First check if we have a user ID in session storage
-          const existingUserId = sessionStorage.getItem("userId")
+          const existingUserId = window.sessionStorage.getItem("userId")
           if (existingUserId) {
             setUserId(existingUserId)
             return
@@ -80,17 +83,17 @@ export default function SummaryPage() {
             console.error("Error creating user:", error)
             // Fallback to a hardcoded ID for demo purposes
             setUserId("demo_user_id")
-            sessionStorage.setItem("userId", "demo_user_id")
+            window.sessionStorage.setItem("userId", "demo_user_id")
             return
           }
 
           setUserId(data.id)
-          sessionStorage.setItem("userId", data.id)
+          window.sessionStorage.setItem("userId", data.id)
         } catch (error) {
           console.error("Error checking user:", error)
           // Fallback to a hardcoded ID for demo purposes
           setUserId("demo_user_id")
-          sessionStorage.setItem("userId", "demo_user_id")
+          window.sessionStorage.setItem("userId", "demo_user_id")
         }
       }
 
@@ -183,9 +186,11 @@ export default function SummaryPage() {
       setIpfsHash(result.hash)
 
       // Save IPFS hash to session storage for the mint page
-      sessionStorage.setItem("ipfsHash", result.hash)
-      sessionStorage.setItem("ipfsUrl", result.url)
-      sessionStorage.setItem("pdfUrl", result.url)
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem("ipfsHash", result.hash)
+        window.sessionStorage.setItem("ipfsUrl", result.url)
+        window.sessionStorage.setItem("pdfUrl", result.url)
+      }
 
       toast({
         title: "Upload successful",
@@ -225,7 +230,7 @@ export default function SummaryPage() {
         risk_level: diagnosis.riskLevel,
         summary: diagnosis.summary,
         ipfs_hash: ipfsHash || null,
-        ipfs_url: sessionStorage.getItem("ipfsUrl") || null,
+        ipfs_url: typeof window !== "undefined" ? window.sessionStorage.getItem("ipfsUrl") || null : null,
         tx_hash: null, // Will be updated after blockchain minting
         wellness_score: diagnosis.wellness_score || 75,
         possibleCauses: diagnosis.possibleCauses,
@@ -250,27 +255,30 @@ export default function SummaryPage() {
       }
 
       // Store record ID in session storage
-      sessionStorage.setItem("currentRecordId", data.record.id)
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem("currentRecordId", data.record.id)
 
-      // Also store in medicalRecords for the records page
-      try {
-        const existingRecords = JSON.parse(sessionStorage.getItem("medicalRecords") || "[]")
-        const newRecord = {
-          id: data.record.id,
-          title: recordData.title,
-          diagnosis: recordData.diagnosis,
-          risk_level: recordData.risk_level,
-          summary: recordData.summary,
-          ipfs_hash: recordData.ipfs_hash,
-          ipfs_url: recordData.ipfs_url,
-          tx_hash: recordData.tx_hash,
-          wellness_score: recordData.wellness_score,
-          created_at: new Date().toISOString(),
+        // Also store in medicalRecords for the records page
+        try {
+          const existingRecordsStr = window.sessionStorage.getItem("medicalRecords") || "[]"
+          const existingRecords = JSON.parse(existingRecordsStr)
+          const newRecord = {
+            id: data.record.id,
+            title: recordData.title,
+            diagnosis: recordData.diagnosis,
+            risk_level: recordData.risk_level,
+            summary: recordData.summary,
+            ipfs_hash: recordData.ipfs_hash,
+            ipfs_url: recordData.ipfs_url,
+            tx_hash: recordData.tx_hash,
+            wellness_score: recordData.wellness_score,
+            created_at: new Date().toISOString(),
+          }
+
+          window.sessionStorage.setItem("medicalRecords", JSON.stringify([...existingRecords, newRecord]))
+        } catch (storageError) {
+          console.error("Error updating session storage:", storageError)
         }
-
-        sessionStorage.setItem("medicalRecords", JSON.stringify([...existingRecords, newRecord]))
-      } catch (storageError) {
-        console.error("Error updating session storage:", storageError)
       }
 
       toast({
@@ -278,6 +286,9 @@ export default function SummaryPage() {
         description: "Your health record has been saved to the database.",
       })
     } catch (error) {
+      console.error("Database save error:", error)
+      toast({\
+        title: "Save failed\",  {
       console.error("Database save error:", error)
       toast({
         title: "Save failed",
@@ -301,7 +312,7 @@ export default function SummaryPage() {
     }
 
     // Save to database before proceeding if not already saved
-    if (!sessionStorage.getItem("currentRecordId")) {
+    if (typeof window !== "undefined" && !window.sessionStorage.getItem("currentRecordId")) {
       await saveToDatabase()
     }
 
