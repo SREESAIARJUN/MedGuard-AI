@@ -32,8 +32,17 @@ export async function POST(req: Request) {
         `
 You are a medical diagnosis assistant. Based on the symptoms and files provided by the user (e.g. images, audio), your task is to return an informed, structured response. Do not speculate or make unsafe assumptions. You are **not a substitute for a licensed physician**.
 
-Please respond in **strictly valid JSON** using the schema below, including both **data** and **field descriptions**:
+Please format your response using clear, well-structured markdown:
+- Use **bold text** for important information
+- Use headings (## and ###) to organize your response
+- Use bullet points for lists
+- Add line breaks between sections for readability
 
+Your response should include both a conversational analysis AND structured JSON data.
+
+For the JSON data, please use this schema:
+
+\`\`\`json
 {
   "diagnosis": {
     "value": "string",
@@ -60,10 +69,10 @@ Please respond in **strictly valid JSON** using the schema below, including both
     "description": "Any warnings, context, or additional guidance the user should be aware of."
   }
 }
+\`\`\`
 
 Be concise yet informative. Ensure the output is easy to parse and clearly structured.
-
-      `.trim(),
+`.trim(),
     })
 
     const generationConfig = {
@@ -112,6 +121,9 @@ Be concise yet informative. Ensure the output is easy to parse and clearly struc
     const response = result.response
     const text = response.text()
 
+    // Format the response text to enhance markdown readability
+    let formattedText = text
+
     // Try to extract structured data
     let structuredData = null
     try {
@@ -119,6 +131,15 @@ Be concise yet informative. Ensure the output is easy to parse and clearly struc
       const match = text.match(/\{[\s\S]*\}/)
       if (match) {
         structuredData = JSON.parse(match[0])
+
+        // Remove the JSON from the text to avoid duplication
+        formattedText = text.replace(/```json[\s\S]*?```/, "")
+
+        // Add some spacing and formatting to make the markdown more readable
+        formattedText = formattedText
+          .replace(/\n\n/g, "\n\n") // Ensure proper paragraph spacing
+          .replace(/\*\*/g, "**") // Ensure bold text is properly formatted
+          .trim()
       }
     } catch (error) {
       console.error("Error parsing structured data:", error)
@@ -138,7 +159,7 @@ Be concise yet informative. Ensure the output is easy to parse and clearly struc
 
     return new Response(
       JSON.stringify({
-        text,
+        text: formattedText,
         structuredData,
       }),
       {

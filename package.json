@@ -60,10 +60,10 @@
     "zod": "latest",
     "@emotion/is-prop-valid": "latest",
     "framer-motion": "latest",
-    "@google/generative-ai": "latest",
-    "react-markdown": "latest",
     "jspdf": "latest",
-    "@supabase/supabase-js": "latest"
+    "@supabase/supabase-js": "latest",
+    "@google/generative-ai": "latest",
+    "react-markdown": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

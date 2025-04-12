@@ -171,10 +171,12 @@ Be informative, safe, and never replace a real doctor.
 
       // Extract the conversational part of the response (before the JSON)
       let aiResponse = data.text
-      const jsonIndex = aiResponse.indexOf("```json")
-      if (jsonIndex > -1) {
-        aiResponse = aiResponse.substring(0, jsonIndex).trim()
-      }
+
+      // Clean up the response to ensure proper markdown rendering
+      aiResponse = aiResponse
+        .replace(/\n\n\n+/g, "\n\n") // Remove excessive line breaks
+        .replace(/\*\*/g, "**") // Ensure proper bold formatting
+        .trim()
 
       // Calculate a wellness score based on the diagnosis
       let calculatedScore = 85 // Default score
@@ -417,16 +419,50 @@ Be informative, safe, and never replace a real doctor.
                   )}
                   <div
                     className={cn(
-                      "rounded-lg p-3 max-w-[80%]",
+                      "rounded-lg p-4 max-w-[85%] md:max-w-[75%]", // Increased width for better readability
                       message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted",
                     )}
                   >
                     {message.role === "assistant" ? (
-                      <div className="prose dark:prose-invert prose-sm max-w-none">
-                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                      <div className="prose dark:prose-invert prose-sm max-w-none break-words">
+                        <ReactMarkdown
+                          components={{
+                            h1: ({ node, ...props }) => <h1 className="text-xl font-bold my-4" {...props} />,
+                            h2: ({ node, ...props }) => <h2 className="text-lg font-bold my-3" {...props} />,
+                            h3: ({ node, ...props }) => <h3 className="text-md font-bold my-2" {...props} />,
+                            ul: ({ node, ...props }) => <ul className="list-disc pl-6 my-2" {...props} />,
+                            ol: ({ node, ...props }) => <ol className="list-decimal pl-6 my-2" {...props} />,
+                            li: ({ node, ...props }) => <li className="my-1" {...props} />,
+                            p: ({ node, ...props }) => <p className="my-2" {...props} />,
+                            code: ({ node, inline, className, children, ...props }) => {
+                              if (inline) {
+                                return (
+                                  <code className="bg-muted px-1 py-0.5 rounded text-sm" {...props}>
+                                    {children}
+                                  </code>
+                                )
+                              }
+                              return (
+                                <pre className="bg-muted p-3 rounded-md overflow-x-auto my-3">
+                                  <code className="text-sm" {...props}>
+                                    {children}
+                                  </code>
+                                </pre>
+                              )
+                            },
+                            blockquote: ({ node, ...props }) => (
+                              <blockquote
+                                className="border-l-4 border-muted-foreground/30 pl-4 italic my-3"
+                                {...props}
+                              />
+                            ),
+                          }}
+                        >
+                          {message.content}
+                        </ReactMarkdown>
                       </div>
                     ) : (
-                      <div className="whitespace-pre-wrap">{message.content}</div>
+                      <div className="whitespace-pre-wrap break-words">{message.content}</div>
                     )}
 
                     {message.attachments && message.attachments.length > 0 && (
