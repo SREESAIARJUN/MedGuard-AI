@@ -1,81 +1,111 @@
-### **Project Title**  
-
-**AI Health Bot + Medical NFTs on Aptos** -  *AI diagnoses symptoms and mints a private medical summary NFT stored securely on Aptos)*
-
-
-**MedGuardAI** *(AI Health Bot + Medical NFTs on Aptos – AI diagnoses symptoms and mints a private medical summary NFT stored securely on Aptos)*
+# 🧠💊 **MedGuardAI**  
+### *AI Health Bot + Medical NFTs on Aptos*  
+> *AI diagnoses symptoms and mints a private medical summary NFT stored securely on the Aptos blockchain.*
 
 ---
 
-### **Selected Domain**  
-
-**Artificial Intelligence/Machine Learning**
-
-
-**Healthcare + Blockchain Technology**
+### 🌐 **Live Demo**  
+🔗 [https://medguardai.vercel.app/](https://medguardai.vercel.app/)
 
 ---
 
-### **Problem Statement / Use Case**  
-Patients often struggle with fragmented health records, lack of data privacy, and the inability to control or securely share their medical data. Traditional healthcare systems are centralized, prone to data breaches, and fail to offer user-centric solutions. There is a need for a platform that combines AI for preliminary diagnosis and blockchain for secure, verifiable, and patient-owned medical records.
+### 🧩 **Selected Domain**  
+**Artificial Intelligence / Machine Learning + Blockchain Technology**
 
 ---
 
-### **Abstract / Problem Description (Max 300 words)**  
-**MedGuardAI** is a blockchain-secured, AI-powered health analysis platform that empowers users with control over their medical data. It uses multimodal AI (text, image, audio, and video) to analyze symptoms and generate structured health assessments. These assessments are then converted into private, tamper-proof NFTs on the Aptos blockchain and stored securely on IPFS.
+### 🩺 **Problem Statement / Use Case**  
+Patients today face:
+- Fragmented and inaccessible medical records  
+- No control over sharing or data ownership  
+- Vulnerability to security breaches in centralized systems  
 
-In conventional systems, health records are scattered across providers and are vulnerable to data loss and unauthorized access. Patients often do not own or control their health information, creating challenges in record portability, especially in emergencies or across borders.
-
-MedGuardAI addresses these pain points by:
-- Offering AI-driven health assessments through multimodal input
-- Generating health reports and storing them decentrally on IPFS
-- Minting encrypted NFTs on the Aptos blockchain for record verification
-- Enabling user-controlled access to medical data
-- Integrating IoT health data for real-time wellness tracking
-
-This ensures medical data is immutable, verifiable, and accessible only to the rightful owner. MedGuardAI redefines digital health management by putting the patient at the center—secured by blockchain and powered by AI.
+💡 **There’s a need for a decentralized, AI-driven platform that empowers patients to securely manage and own their health records.**
 
 ---
 
-### **Tech Stack Used**  
-- **Frontend**: Next.js 14 (App Router), React, TypeScript  
-- **Styling**: Tailwind CSS, shadcn/ui, Framer Motion, Lucide Icons  
-- **AI Model**: Google Gemini API (for multimodal health analysis)  
-- **Blockchain**: Aptos (for minting health NFTs)  
-- **Storage**: IPFS via Pinata (for decentralized PDF storage)  
-- **Database**: Supabase (PostgreSQL)  
-- **Auth**: Supabase Auth  
-- **PDF Generation**: jsPDF  
+### 📄 **Abstract / Problem Description**  
+**MedGuardAI** is an innovative platform that combines the intelligence of AI with the security of blockchain. It allows users to:
+- Input symptoms via **text, image, audio, or video**
+- Receive structured health assessments via **Google Gemini**
+- Generate a **PDF health report**
+- Mint that report as a **private NFT on Aptos**
+- Securely store it on **IPFS**, ensuring **ownership, privacy, and portability**
+
+🔐 Users stay in complete control of their medical data, share it only with consent, and enjoy seamless access—even during emergencies or across borders.
+
+🎯 **Key Benefits:**
+- AI-powered, multimodal health analysis
+- Decentralized IPFS storage
+- Blockchain-secured NFTs for medical records
+- Real-time health monitoring with IoT device support
+- Patient-first design with full data sovereignty
 
 ---
 
-### **Project Explanation**
+### ⚙️ **Tech Stack Used**  
+| Layer | Tools & Technologies |
+|-------|----------------------|
+| **Frontend** | Next.js 14 (App Router), React, TypeScript |
+| **Styling** | Tailwind CSS, shadcn/ui, Framer Motion, Lucide Icons |
+| **AI Integration** | Google Gemini API (Multimodal Analysis) |
+| **Blockchain** | Aptos (NFT minting for medical records) |
+| **Storage** | IPFS via Pinata (Decentralized PDF Storage) |
+| **Backend** | Supabase (PostgreSQL) |
+| **Auth** | Supabase Auth |
+| **PDF Generation** | jsPDF |
 
-#### **1. AI Health Assistant**
-- Users input symptoms via text, image, audio, or video.
-- Gemini API provides structured feedback: probable diagnosis, causes, severity, and treatment advice.
-- Results are converted into PDF reports for user records.
+---
 
-#### **2. Decentralized Secure Storage**
-- AI reports are transformed into PDFs.
-- PDFs are uploaded to IPFS via Pinata, returning unique hashes.
-- Hashes are stored in the database and linked to NFTs.
+### 🚀 **Project Features & Workflow**
 
-#### **3. Blockchain NFT Minting (Aptos)**
-- Each medical report can be minted as a private NFT on Aptos.
-- This provides tamper-proof ownership and enables sharing only with consent.
-- Ensures medical transparency and data permanence.
+#### ✅ 1. **AI Health Assistant**
+- Accepts inputs via text, image, audio, or video.
+- Uses **Gemini API** to analyze symptoms.
+- Outputs structured data: diagnosis, severity, causes, treatments.
+- Generates a downloadable **PDF report**.
 
-#### **4. IoT Integration**
-- Syncs with devices like smartwatches or fitness bands.
-- Aggregates vitals and daily activity to generate real-time wellness scores.
+---
 
-#### **5. User Dashboard**
-- Visualizes wellness trends, NFT history, and past health records.
-- Allows download/share of health reports.
-- Controls access to medical NFTs for verified third-party use.
+#### 🔐 2. **Decentralized Secure Storage**
+- Reports are stored as PDFs.
+- PDFs are uploaded to **IPFS** via **Pinata**.
+- Unique **IPFS hash** is stored in the database and linked to the NFT.
 
-#### **6. Technical Architecture**
-- Server Components manage health record processing and AI calls.
-- Client Components ensure interactivity and real-time updates.
-- Supabase handles user sessions, data encryption, and access control.
+---
+
+#### 🧬 3. **Blockchain NFT Minting (Aptos)**
+- Mints encrypted, private NFTs for each report.
+- Provides **verifiable ownership** and **tamper-proof history**.
+- NFTs are accessible only by the user or via explicit permission.
+
+---
+
+#### 📱 4. **IoT Device Integration**
+- Supports smartwatches, fitness bands, and other IoT health devices.
+- Aggregates vitals like **heart rate**, **temperature**, and **activity**.
+- Computes and displays a **real-time wellness score**.
+
+---
+
+#### 📊 5. **User Dashboard**
+- Displays health timeline, NFT ownership, and vitals.
+- Enables downloading and sharing of health reports.
+- Offers full control over data access and sharing.
+
+---
+
+#### 🏗️ 6. **Technical Architecture**
+- Server Components handle AI processing & NFT minting.
+- Client Components power real-time interactivity.
+- Supabase manages:
+  - Authentication
+  - User session handling
+  - Data encryption and access control
+
+---
+
+### 🎯 **Vision**
+> *MedGuardAI reimagines digital healthcare: Secure, Intelligent, Decentralized, and Patient-Centric.*
+
+---
