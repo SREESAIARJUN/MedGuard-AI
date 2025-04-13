@@ -126,5 +126,22 @@ Patients today face:
 
 ---
 
+
 ### 🌟 **Vision**
 > *Redefining healthcare with AI-powered diagnostics and decentralized medical ownership—**because your health data should belong to you**.*_
+
+---
+
+### **Demonstration**
+
+
+
+![Screenshot (3)](https://github.com/user-attachments/assets/6cfcf783-2ee8-4383-8bf6-e4ca6e3a9421)
+![Screenshot (4)](https://github.com/user-attachments/assets/c59780b3-16ec-414c-b566-4940a627e53f)
+![Screenshot (100)](https://github.com/user-attachments/assets/276647ca-2e57-4f46-a0f1-3d4081f90043)
+![Screenshot (127)](https://github.com/user-attachments/assets/fcc8ff34-8d43-42c9-8a80-20ae5b847592)
+![Screenshot (128)](https://github.com/user-attachments/assets/aff2a7eb-9fab-4d31-a5b6-318a20167303)
+![Screenshot (129)](https://github.com/user-attachments/assets/5a03465d-4a85-4199-b8d0-b60708b12c83)
+![Screenshot (130)](https://github.com/user-attachments/assets/0e24b5ad-53ed-4f28-9ab4-d55715e21b97)
+
+
